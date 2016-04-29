@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         
         mainWebView = (WebView) findViewById(R.id.mainWebView);
-        mainWebView.setWebViewClient(new InicisWebViewClient(this, mainWebView));
+        mainWebView.setWebViewClient(new InicisWebViewClient(this));
         WebSettings settings = mainWebView.getSettings();
         settings.setJavaScriptEnabled(true);
         
