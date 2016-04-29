@@ -1,4 +1,4 @@
-package com.example.inicissample;
+package com.siot.inicissample;
 
 import android.app.Activity;
 import android.content.Intent;
