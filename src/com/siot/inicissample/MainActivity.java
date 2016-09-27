@@ -1,9 +1,12 @@
 package com.siot.inicissample;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -12,9 +15,9 @@ import com.siot.iamportsdk.InicisWebViewClient;
 public class MainActivity extends Activity {
 
 	private WebView mainWebView;
-	private final String APP_SCHEME = "iamporttest://";
+	private static final String APP_SCHEME = "iamporttest://";
 	
-    @Override
+    @SuppressLint("NewApi") @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -23,6 +26,13 @@ public class MainActivity extends Activity {
         mainWebView.setWebViewClient(new InicisWebViewClient(this));
         WebSettings settings = mainWebView.getSettings();
         settings.setJavaScriptEnabled(true);
+        
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        	settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        	CookieManager cookieManager = CookieManager.getInstance();
+        	cookieManager.setAcceptCookie(true);
+        	cookieManager.setAcceptThirdPartyCookies(mainWebView, true);
+        }
         
         Intent intent = getIntent();
         Uri intentData = intent.getData();
@@ -38,4 +48,14 @@ public class MainActivity extends Activity {
         	}
         }
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+    	String url = intent.toString();
+    	if ( url.startsWith(APP_SCHEME) ) {
+    		String redirectURL = url.substring(APP_SCHEME.length()+3);
+    		mainWebView.loadUrl(redirectURL);
+    	}
+    }
+    
 }
